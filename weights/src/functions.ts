@@ -1,3 +1,5 @@
+import { Data, Input } from "./types/dataTypes";
+
 declare const brain: any;
 
 export function createNN() {
@@ -37,7 +39,7 @@ export function createNN() {
     console.log('Decision for {10, 40, 5}:', decision2);
 }
 
-function normalizeData(trainingData: Array<Object>): Array<Object> {
+function normalizeData(trainingData: Array<Data>): Array<Data> {
 
     //temp -> 50% --> 0.5
     //humidity -> 30% --> 0.3
@@ -52,7 +54,7 @@ function normalizeData(trainingData: Array<Object>): Array<Object> {
     return trainingData
 }
 
-function normalizeInput(input: Object): Object {
+function normalizeInput(input: Input): Input {
 
     //temp -> 50% --> 0.5
     //humidity -> 30% --> 0.3
