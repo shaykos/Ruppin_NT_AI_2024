@@ -46,7 +46,7 @@ export function createNN() {
     console.log('Decision for {30, 70, 12}:', decision1);
     console.log('Decision for {10, 40, 5}:', decision2);
 
-    document.querySelector('#app').innerHTML = brain.utilities.toSVG(net);
+    (document.querySelector('#app') as HTMLDivElement).innerHTML = brain.utilities.toSVG(net);
 
 }
 
