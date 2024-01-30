@@ -4,7 +4,11 @@ declare const brain: any;
 
 export function createNN() {
     // Create a new neural network
-    const net = new brain.NeuralNetwork();
+    const net = new brain.NeuralNetwork({
+        hiddenLayers: [3],
+        inputSize: 3,
+        outputSize: 1,
+    });
 
     // Weather decision training data
     //temp -> 50%
@@ -25,7 +29,11 @@ export function createNN() {
     let newData = normalizeData(trainingData);
 
     // Train the neural network
-    net.train(newData);
+    net.train(newData, {
+        logPeriod: 100,
+        layers: [3, 5, 1],
+        log: (stats: any) => console.log(stats)
+    });
 
     // Make predictions
     const decision1 = net.run(normalizeInput({ temperature: 33, humidity: 70, wind: 12 }));
@@ -37,6 +45,9 @@ export function createNN() {
     // Display predictions
     console.log('Decision for {30, 70, 12}:', decision1);
     console.log('Decision for {10, 40, 5}:', decision2);
+
+    document.querySelector('#app').innerHTML = brain.utilities.toSVG(net);
+
 }
 
 function normalizeData(trainingData: Array<Data>): Array<Data> {
