@@ -1,6 +1,3 @@
-import { Data, Input } from "./types/dataTypes";
-
-declare const brain: any;
 
 export function createNN() {
     // Create a new neural network
@@ -31,7 +28,7 @@ export function createNN() {
     // Train the neural network
     net.train(newData, {
         logPeriod: 100,
-        log: (stats: any) => console.log(stats)
+        log: (stats) => console.log(stats)
     });
 
     // Make predictions
@@ -45,26 +42,26 @@ export function createNN() {
     console.log('Decision for {30, 70, 12}:', decision1);
     console.log('Decision for {10, 40, 5}:', decision2);
 
-    (document.querySelector('#app') as HTMLDivElement).innerHTML = brain.utilities.toSVG(net);
+    document.querySelector('#app').innerHTML = brain.utilities.toSVG(net);
 
 }
 
-function normalizeData(trainingData: Array<Data>): Array<Data> {
+function normalizeData(trainingData) {
 
     //temp -> 50% --> 0.5
     //humidity -> 30% --> 0.3
     //wind -> 20% --> 0.2
     // { input: { temperature: 25, humidity: 60, wind: 10 }, output: { goForRun: 1 } },
     trainingData.forEach((data) => {
-        data.input.temperature = data.input.temperature * 0.5
-        data.input.humidity = data.input.humidity * 0.3
-        data.input.wind = data.input.wind * 0.2
+        data.input.temperature *= 0.5
+        data.input.humidity *= 0.3
+        data.input.wind *= 0.2
     });
 
     return trainingData
 }
 
-function normalizeInput(input: Input): Input {
+function normalizeInput(input) {
 
     //temp -> 50% --> 0.5
     //humidity -> 30% --> 0.3
