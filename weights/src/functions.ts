@@ -31,7 +31,6 @@ export function createNN() {
     // Train the neural network
     net.train(newData, {
         logPeriod: 100,
-        layers: [3, 5, 1],
         log: (stats: any) => console.log(stats)
     });
 
