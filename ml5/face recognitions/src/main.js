@@ -1,20 +1,29 @@
-import {make} from './functions';
+import {readImageFromFile} from './functions';
 
 let filePicker = document.querySelector('#filePicker');
-
-filePicker.addEventListener('change', (event) => {
-  let file = event.target.files[0];
-  let reader = new FileReader();
-
-  reader.onload = () => { 
-    //console.log(reader.result);
-    make(reader.result); 
-  }
-  reader.readAsDataURL(file);
+document.querySelector('#face').addEventListener('click', ()=>{
+  readImageFromFile(filePicker.files[0], 'face');
 });
 
-// call app.map.init() once the DOM is loaded
-// window.addEventListener("DOMContentLoaded", function () {
-//   make();
+
+document.querySelector('#skeleton').addEventListener('click', ()=>{
+  readImageFromFile(filePicker.files[0], 'skeleton');
+});
+
+
+
+
+// filePicker.addEventListener('change', (event) => {
+//   let file = event.target.files[0];
+//   let reader = new FileReader();
+
+//   reader.onload = () => { 
+//     make(reader.result); 
+//   }
+//   reader.readAsDataURL(file);
 // });
+
+
+
+
 

@@ -4,6 +4,8 @@ let detections;
 const width = window.innerWidth * 0.8;
 const height = window.innerHeight * 0.8;
 let canvas, ctx;
+let poseNet;
+let poses = [];
 
 // by default all options are set to true
 const detectionOptions = {
@@ -11,11 +13,24 @@ const detectionOptions = {
   withDescriptors: false,
 };
 
+export function readImageFromFile(file, type) {
+  let reader = new FileReader();
+  reader.onload = () => {
+    if (type == 'face')
+      face(reader.result);
+    else {
+      skeleton(reader.result);
+    }
+  }
+  reader.readAsDataURL(file);
+}
+
+
 /**
  * The function `make` asynchronously creates an image, sets its source to "assets/frida.jpg", and
  * initializes face detection using ml5.js.
  */
-export async function make(base64) {
+async function face(base64) {
   img = new Image();
   img.src = base64;
   img.width = width;
@@ -24,18 +39,94 @@ export async function make(base64) {
   canvas = createCanvas(width, height);
   ctx = canvas.getContext("2d");
 
-  faceapi = await ml5.faceApi(detectionOptions, modelReady);
+  faceapi = await ml5.faceApi(detectionOptions, () => { modelReady('face') });
 
-  // faceapi.detectSingle(img, gotResults)
+  //faceapi.detectSingle(img, gotResults);
+}
+
+async function skeleton(base64) {
+  img = new Image();
+  img.src = base64;
+  img.width = width;
+  img.height = height;
+
+  canvas = createCanvas(width, height);
+  ctx = canvas.getContext("2d");
+
+  poseNet = await ml5.poseNet(() => { modelReady('skeleton') });
+
+  // This sets up an event that fills the global variable "poses"
+  // with an array every time new poses are detected
+  poseNet.on("pose", function (results) {
+    poses = results;
+  });
+
+  requestAnimationFrame(draw);
+
+  //faceapi.detectSingle(img, gotResults);
+}
+
+
+function draw() {
+  requestAnimationFrame(draw);
+
+  ctx.drawImage(img, 0, 0, img.width, img.height);
+  // We can call both functions to draw all keypoints and the skeletons
+
+  // For one pose only (use a for loop for multiple poses!)
+  if (poses.length > 0) {
+    drawKeypoints();
+    drawSkeleton();
+  }
+}
+
+// A function to draw ellipses over the detected keypoints
+function drawKeypoints() {
+  // Loop through all the poses detected
+  for (let i = 0; i < poses.length; i += 1) {
+    // For each pose detected, loop through all the keypoints
+    for (let j = 0; j < poses[i].pose.keypoints.length; j += 1) {
+      const keypoint = poses[i].pose.keypoints[j];
+      // Only draw an ellipse is the pose probability is bigger than 0.2
+      if (keypoint.score > 0.2) {
+        ctx.fillStyle = "#FFFFFF";
+        ctx.beginPath();
+        ctx.arc(keypoint.position.x, keypoint.position.y, 6, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.strokeStyle = "#00FF00";
+        ctx.fill();
+      }
+    }
+  }
+}
+
+// A function to draw the skeletons
+function drawSkeleton() {
+  // Loop through all the skeletons detected
+  for (let i = 0; i < poses.length; i += 1) {
+    // For every skeleton, loop through all body connections
+    for (let j = 0; j < poses[i].skeleton.length; j += 1) {
+      const partA = poses[i].skeleton[j][0];
+      const partB = poses[i].skeleton[j][1];
+      ctx.beginPath();
+      ctx.moveTo(partA.position.x, partA.position.y);
+      ctx.lineTo(partB.position.x, partB.position.y);
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.stroke();
+    }
+  }
 }
 
 /**
  * The `modelReady` function logs "ready!" to the console and then calls the `detectSingle` function
  * from the faceapi library with the `img` parameter and a callback function `gotResults`.
  */
-function modelReady() {
+function modelReady(type) {
   console.log("ready!");
-  faceapi.detectSingle(img, gotResults);
+  if (type == 'face')
+    faceapi.detectSingle(img, gotResults);
+  else
+    poseNet.singlePose(img);
 }
 
 /**
@@ -184,6 +275,6 @@ function createCanvas(w, h) {
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
-  document.body.appendChild(canvas);
+  document.querySelector('#app').appendChild(canvas);
   return canvas;
 }
