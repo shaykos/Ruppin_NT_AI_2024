@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "full_name": "Eli Copter",
+    "email": "boom@gmail.com",
+    "password": "EliBoom123!"
+  },
+  {
+    "id": 2,
+    "full_name": "Avi Ron",
+    "email": "avi@gmail.com",
+    "password": "AviRonron3!"
+  }
+]
