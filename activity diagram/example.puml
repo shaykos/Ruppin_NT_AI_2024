@@ -1,0 +1,58 @@
+@startuml
+
+' start
+'    :Enter Temp;
+'     if(temp >= 29.8) then(yes)
+'         :It's Party Time;
+'     else (no)
+'         :We are SAD;
+'     endif
+' stop
+
+'do-while
+'כל עוד המספר לא זוגי לקלוט מספר חדש
+
+' start
+'     repeat
+'         :ask for a number;
+'         :input a number;
+'     repeat while (the number is odd) is (yes) not (no)
+'     :Print the number;
+' stop
+
+start
+    :Enter an email;
+    if(email format is invalid) then (yes)
+        :Show "Invalid Email Format";
+        end;
+    else (no)
+        if(email already exists in DB) then (yes)
+            :Show "Email Already Exists";
+            end;
+        else (no)
+            :Enter your first name;
+            :Enter last name;
+            :Enter password;
+            :Hash the password;
+            :Check if the account is locked;
+            if(account is locked) then (yes)
+                :Show "Account Locked";
+                end;
+            else (no)
+                :Validate the entered password;
+                if(password is correct) then (yes)
+                    :Allow access to the account;
+                else (no)
+                    :Increment the failed login attempts counter;
+                    if(failed login attempts exceed threshold) then (yes)
+                        :Lock the account;
+                        :Show "Account Locked";
+                    else (no)
+                        :Show "Incorrect Password";
+                    endif
+                endif
+            endif
+        endif
+    endif
+stop
+@enduml
