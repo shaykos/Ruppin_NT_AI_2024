@@ -26,7 +26,7 @@ function App() {
     if (image == '')
       return alert('please choose a file');
 
-    let res = await fetch('http://localhost:9876/api/image/upload', {
+    let res = await fetch('https://ruppin-upload-image.onrender.com/api/image/upload', {
       method: 'POST',
       headers: {
         "Content-Type": "application/json"
