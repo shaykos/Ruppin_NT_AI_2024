@@ -1,7 +1,7 @@
 import 'dotenv/config'; // apply env vars
 import express from 'express';
 import cors from 'cors';
-import bcrypt from "bcrypt";
+import userRoutes from './users/user.routes';
 
 //config
 //process.env.PORT --> the live server port
@@ -15,7 +15,7 @@ server.use(express.json());
 server.use(cors());
 
 //using routes
-
+server.use('/api/users', userRoutes);
 
 
 //run the server
